@@ -1,21 +1,19 @@
-const TOKEN = '5625717603:AAEM-f_lKhTX_CbiU-gwTT_4Dhpxd5DFumQ'
+const TOKEN = "5625717603:AAEM-f_lKhTX_CbiU-gwTT_4Dhpxd5DFumQ";
+const TELEGRAM_API = require("node-telegram-bot-api");
+const { messageTypes } = require("node-telegram-bot-api/src/telegram");
+const { options } = require("nodemon/lib/config");
 
-const TELEGRAM_API = require('node-telegram-bot-api')
-const { options } = require('nodemon/lib/config')
+const BOT = new TELEGRAM_API(TOKEN, { polling: true });
 
-const BOT = new TELEGRAM_API(TOKEN, {polling: true})
+BOT.setMyCommands([{ command: "", description: "" }]);
 
-BOT.setMyCommands( [
-    {command: '/start', description: ''}
-])
+BOT.on("message", async (msg) => {
+    const text = msg.text
+    const chaitId = msg.from.id
 
-const start = () => {
-    BOT.on('message', async msg => {
-        const text = msg.text;
-        const chatId = msg.chat.id;
+  if (msg.hasOwnProperty('entities') === true ) {
+      let entitiesLength = msg.entities[0].length
+     BOT.sendMessage(chaitId, `hello, length ${msg.}`)
+  }
 
-        await BOT.sendMessage(chatId,  `)
-    })   
-}
-
-start()
+});
