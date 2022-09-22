@@ -7,13 +7,32 @@ const BOT = new TELEGRAM_API(TOKEN, { polling: true });
 
 BOT.setMyCommands([{ command: "", description: "" }]);
 
-BOT.on("message", async (msg) => {
-    const text = msg.text
-    const chaitId = msg.from.id
+const hugs = () => {
+  BOT.on("message", async (msg) => {
+    const text = msg.text;
+    const chatId = msg.chat.id;
 
-  if (msg.hasOwnProperty('entities') === true ) {
-      let entitiesLength = msg.entities[0].length
-     BOT.sendMessage(chaitId, `hello, length ${msg.}`)
-  }
+    const sender = msg.from.username;
 
-});
+    const phrasesArr = [
+      "крепко прижал(а) к себе",
+      "задушил(а), но не ляшками,",
+      "с любовью обнял(а)",
+      "до смерти заобнимал(а)",
+    ];
+
+    if (
+      text == "шоунен обнять" &&
+      msg.hasOwnProperty("reply_to_message") === true
+    ) {
+      await BOT.sendMessage(
+        chatId,
+        `@${sender} ${
+          phrasesArr[Math.floor(Math.random() * phrasesArr.length)]
+        } @${msg.reply_to_message.from.username}`
+      );
+    }
+  });
+};
+
+hugs();
