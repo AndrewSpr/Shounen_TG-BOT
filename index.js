@@ -1,4 +1,3 @@
-const TOKEN = "5625717603:AAEM-f_lKhTX_CbiU-gwTT_4Dhpxd5DFumQ";
 require("dotenv").config();
 const TELEGRAM_API = require("node-telegram-bot-api");
 const { messageTypes } = require("node-telegram-bot-api/src/telegram");
