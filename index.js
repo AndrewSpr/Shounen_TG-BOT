@@ -12,7 +12,7 @@ BOT.setMyCommands([{ command: "", description: "" }]);
 const commandHandler = (() => {
   // an arrow function that will process simple commands and send a response to them
   BOT.on("message", async (msg) => {
-    const text = msg.text; // var stores data about text of the message that the user sent
+    const text = msg.text || ''; // var stores data about text of the message that the user sent; is initialized with an empty string
     const chatId = msg.chat.id; // var stores chat ID
 
     const sender = msg.from.username; // var stores the data about the sender's ID
@@ -24,7 +24,7 @@ const commandHandler = (() => {
 
     for (let i = 0; i < commandList.length; i++) {
       if (
-        text == `шоунен ${commandList[i].commandName}` &&
+        text.toLowerCase() == `шоунен ${commandList[i].commandName}` &&
         msg.hasOwnProperty("reply_to_message") === true
       ) {
         const randomPhoto = Math.floor(
