@@ -1,5 +1,5 @@
 module.exports = {
-    commandList: [
+    RolePlayCommandList: [
         (hug = {
           commandName: "обнять",
           phrases: [
@@ -87,6 +87,56 @@ module.exports = {
             "/img/struggle4.webp"
           ]
         }),
+        (struggle = {
+          commandName: "похвалить",
+          phrases: [
+            "считает, что ты настоящий(ая) умничка,",
+            "от лица союза хвалебных партий вручил(а) медаль",
+            "ласково погладил(а) по голове,",
+            "с гордостью похвалил(а)",
+            "мило улыбнулся(ась) и похвалил(а)",
+            "прошептал(а) на ушко хвалебные слова для",
+            "поцелуем вознаградил(а) за старания"
+          ],
+          photo: [
+            "/img/praise1.webp",
+            "/img/praise2.webp",
+            "/img/praise3.webp",
+            "/img/praise4.webp",
+            "/img/praise5.webp",
+            "/img/praise6.webp"
+          ]
+        }),
+        (struggle = {
+          commandName: "укусить",
+          phrases: [
+            "страстно покусал(а) шею",
+            "укусил(а) за ляшку",
+            "устроил(а) любовные покусывания для",
+            "оставил(а) след от своих зубов на руке"
+          ],
+          photo: [
+            "/img/bite1.webp",
+            "/img/bite2.webp",
+            "/img/bite3.webp",
+            "/img/bite4.webp"
+          ]
+        }),
+        (struggle = {
+          commandName: "лизнуть",
+          phrases: [
+            "в порыве страсти набросился(ась) и облизал(а)",
+            "сладко лизнул(а) шею",
+            "обслюнявил(а) каждый укромый уголок тела"
+          ],
+          photo: [
+            "/img/lick1.webp",
+            "/img/lick2.webp",
+            "/img/lick3.webp",
+            "/img/lick4.webp",
+            "/img/lick5.webp"
+          ]
+        }),
         (wolfQuotes = {
           commandName: "ауф",
           phrases: [
@@ -105,6 +155,22 @@ module.exports = {
             "/img/auf3.webp",
             "/img/auf4.webp",
             "/img/auf5.webp"
+          ]
+        }),
+        (struggle = {
+          commandName: "устроить крестовый поход",
+          phrases: [
+            "взял(а) в руки факел, циганские вилы пра-пра-пра-пра-прадедушки и устроил(а) крестовых поход за",
+            "из-за отсутствия друзей вынужден(а) в одиночку идти в крестовый поход за",
+            "собрал(а) свои православные манатки, заточил(а) осиновую швабру и пошел(ла) за",
+            "взял(а) отцовский дилдо-меч и организовал ♂gay crusade♂ для",
+            "поднял(а) флаг ЛГБТ и пошел(ла) обращать в свою веру",
+          ],
+          photo: [
+            "/img/crusade1.webp",
+            "/img/crusade2.webp",
+            "/img/crusade3.webp",
+            "/img/crusade4.webp"
           ]
         }),
       ]
