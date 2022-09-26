@@ -9,7 +9,7 @@ const BOT = new TELEGRAM_API(process.env.TOKEN, { polling: true });
 
 BOT.setMyCommands([
   {
-    command: ":help",
+    command: "/help",
     description:
       "Выводит список доступных комманд в среде Шоунена, включая примеры использования",
   },
