@@ -27,44 +27,6 @@ const helpScreener = (() => {
   });
 })();
 
-const commandHandler = (() => {
-  // an arrow function that will process simple commands and send a response to them
-  BOT.on("message", async (msg) => {
-    const text = msg.text || ""; // var stores data about text of the message that the user sent; is initialized with an empty string
-    const chatId = msg.chat.id; // var stores chat ID
-
-    const sender = msg.from.username; // var stores the data about the sender's ID
-
-    /* task of the loop is to look through all 
-    array indexes from the commands module
-    and find the properties of the command 
-    that corresponds to the one requested by the user */
-
-    for (let i = 0; i < RolePlayCommandList.length; i++) {
-      if (
-        text.toLowerCase() == `шоунен ${RolePlayCommandList[i].commandName}` &&
-        msg.hasOwnProperty("reply_to_message") === true
-      ) {
-        const randomPhoto = Math.floor(
-          Math.random() * RolePlayCommandList[i].photo.length
-        ); // var stores the result of calculating the index of the photo that will be sent
-        const randomPhrase = Math.floor(
-          Math.random() * RolePlayCommandList[i].phrases.length
-        ); // var stores the result of calculating the index of the phrase that will be set as a description for the photo
-        await BOT.sendPhoto(
-          chatId,
-          fs.readFileSync(
-            __dirname + RolePlayCommandList[i].photo[randomPhoto]
-          ),
-          {
-            caption: `@${sender} ${RolePlayCommandList[i].phrases[randomPhrase]} @${msg.reply_to_message.from.username}`,
-          }
-        );
-      }
-    }
-  });
-})();
-
 function createDuelistProfile(username, id, hp, weapon) {
   this.username = username
   this.id = id;
@@ -102,58 +64,21 @@ const duelsOptions = {
   })
 }
 
-
-const DuelHandler = (chatId) => {
-
-  /*BOT.on("message", async (msg) => {
-    const text = msg.text || "";
-    const chatId = msg.chat.id;
-
-    const weaponsList = [
-      pistol = {
-        name: 'Pistol',
-        damage: 15
-      },
-      machineGun = {
-        name: 'Machinegun',
-        damage: 25
-      }
-    ]
-
-    if(text.toLowerCase() == 'шоунен дуэль' && msg.hasOwnProperty("reply_to_message") === true) {
-      const sender = new createDuelistProfile(msg.from.username, msg.from.id, 100, weaponsList[Math.floor(Math.random()*weaponsList.length)])
-      const recipient = new createDuelistProfile(msg.reply_to_message.from.username, msg.reply_to_message.from.id, 100, weaponsList[Math.floor(Math.random()*weaponsList.length)])
-      let senderHp = sender.hp, recipientHp = recipient.hp;
-      
-      for(let move = 0; senderHp > 0 || recipientHp > 0; move++) {
-        let senderHit = hitDetector(), recipientHit = hitDetector();
-        BOT.sendMessage(chatId, `@${sender.username} сделал выстрел из ${sender.weapon.name} и он ${senderHit} \n@${recipient.username} сделал выстрел из ${recipient.weapon.name} и он ${recipientHit}`);
-
-        if(senderHit == 'попал') {
-          recipientHp -= sender.weapon.damage
-        } else if (recipientHit == 'попал') {
-          senderHp -= recipient.weapon.damage
-        } else if (recipientHp <= 0) {
-          BOT.sendMessage(chatId, `@${recipient.username} проиграл в дуэли`)
-        } else if (senderHp <= 0) {
-          BOT.sendMessage(chatId, `@${sender.username} проиграл дуэль`)
-        }
-      }
-
-    }
-  })*/
-}
-
-const DuelingResponseHandler = (recipientId, recipientUsername) => {
+const DuelHandler = (recipientId, recipientUsername, senderId, senderUsername) => {
+  const DuelLaunch = (chatId) => {
+    BOT.sendMessage(chatId, `@${recipientUsername} наклоняется и поднимает дедовскую перчатку. Дуэль между @${senderUsername} и @${recipientUsername} начинается!\n\nОба пользователя наугад берут коробку с оружием и расходятся в разные стороны`)
+  
+  }
+ 
   BOT.on("callback_query", async (query) => {
     const {chat, message_id} = query.message
   
     switch (true) {
       case query.data === "Yes" && recipientId == query.from.id:
-        console.log(query)
+        DuelLaunch(chat.id)
       break;
       case query.data === "No" && recipientId == query.from.id:
-        BOT.editMessageText(`Дуэль отменена. @${recipientUsername} отказался от участия в этом кровопролитном деянии`, {
+        await BOT.editMessageText(`Дуэль отменена. @${recipientUsername} отказался от участия в этом кровопролитном деянии`, {
           chat_id: chat.id,
           message_id: message_id
         })
@@ -162,16 +87,44 @@ const DuelingResponseHandler = (recipientId, recipientUsername) => {
   })
 }
 
-const DuelDeclaration = (() => {
+const commandHandler = (() => {
+  // an arrow function that will process simple commands and send a response to them
   BOT.on("message", async (msg) => {
-    const chatId = msg.chat.id;
-    const text = msg.text || "";
+    const text = msg.text || ""; // var stores data about text of the message that the user sent; is initialized with an empty string
+    const chatId = msg.chat.id; // var stores chat ID
 
-    const sender = msg.from.username
+    const sender = msg.from.username; // var stores the data about the sender's ID
 
-    if (text.toLowerCase() == 'шоунен дуэль' && msg.hasOwnProperty("reply_to_message") === true) {
-      await BOT.sendMessage(chatId, `@${sender} снял дедовскую перчатку со своей правой руки и швырнул прямо вам в лицо, объявив дуэль, @${msg.reply_to_message.from.username}\n\nЧтобы согласиться, или отказаться, нажмите соответствующую кнопку`, duelsOptions)
-      DuelingResponseHandler(msg.reply_to_message.from.id, msg.reply_to_message.from.username);
+    /* task of the loop is to look through all 
+    array indexes from the commands module
+    and find the properties of the command 
+    that corresponds to the one requested by the user */
+
+    for (let i = 0; i < RolePlayCommandList.length; i++) {
+      if (
+        text.toLowerCase() == `шоунен ${RolePlayCommandList[i].commandName}` &&
+        msg.hasOwnProperty("reply_to_message") === true && text.toLowerCase() != `шоунен дуэль`
+      ) {
+        const randomPhoto = Math.floor(
+          Math.random() * RolePlayCommandList[i].photo.length
+        ); // var stores the result of calculating the index of the photo that will be sent
+        const randomPhrase = Math.floor(
+          Math.random() * RolePlayCommandList[i].phrases.length
+        ); // var stores the result of calculating the index of the phrase that will be set as a description for the photo
+        await BOT.sendPhoto(
+          chatId,
+          fs.readFileSync(
+            __dirname + RolePlayCommandList[i].photo[randomPhoto]
+          ),
+          {
+            caption: `@${sender} ${RolePlayCommandList[i].phrases[randomPhrase]} @${msg.reply_to_message.from.username}`,
+          }
+        );
+      } else if (msg.hasOwnProperty("reply_to_message") === true && text.toLowerCase() === `шоунен дуэль`) {
+        await BOT.sendMessage(chatId, `@${sender} снял дедовскую перчатку со своей правой руки и швырнул прямо вам в лицо, объявив дуэль, @${msg.reply_to_message.from.username}\n\nЧтобы согласиться, или отказаться, нажмите соответствующую кнопку`, duelsOptions)
+          DuelHandler(msg.reply_to_message.from.id, msg.reply_to_message.from.username, msg.from.id, msg.from.username);
+        break;
+      }
     }
-  })
+  });
 })();

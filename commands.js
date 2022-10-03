@@ -173,5 +173,8 @@ module.exports = {
             "/img/crusade4.webp"
           ]
         }),
+        (duel = {
+          name: "дуэль"
+        })
       ]
 }
