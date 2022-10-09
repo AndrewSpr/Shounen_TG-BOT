@@ -28,6 +28,8 @@ const helpScreener = (() => {
   });
 })();
 
+/* block of code responsible for handling duels */
+
 function createDuelistProfile(username, id, hp, weapon) {
   this.username = username;
   this.id = id;
@@ -48,7 +50,7 @@ const hitDetector = () => {
   return hitResult;
 };
 
-const duelsOptions = {
+const duelResponseKeyboard = {
   reply_markup: JSON.stringify({
     inline_keyboard: [
       [
@@ -65,38 +67,81 @@ const duelsOptions = {
   }),
 };
 
-const DuelHandler = (
+const duelActionsKeyboard = {
+  reply_markup: JSON.stringify({
+    inline_keyboard: [
+      [
+        {
+          text: "Выстрел",
+          callback_data: "Shoot",
+        },
+        {
+          text: "Опустить оружие и сбежать",
+          callback_data: "Exit",
+        },
+      ],
+    ],
+  }),
+};
+
+const DuelHandler = async (
+  chatId,
   recipientId,
   recipientUsername,
   senderId,
   senderUsername
 ) => {
 
-  const DuelLaunch = async (chatId) => {
-    const weaponsList = [
-      pistol = {
-        name: "pistol"
-      },
-      gun = {
-        name: "gun"
-      }
-    ]
+  const weaponsList = [
+    (pistol = {
+      name: "pistol",
+    }),
+    (gun = {
+      name: "gun",
+    }),
+  ];
 
-    const sender = new createDuelistProfile(senderUsername, senderId, 100, weaponsList[Math.floor(Math.random()*weaponsList.length)])
-    const recipient = new createDuelistProfile(recipientUsername, recipientId, 100, weaponsList[Math.floor(Math.random()*weaponsList.length)])
+  const duelists = [
+    sender = new createDuelistProfile(
+      senderUsername,
+      senderId,
+      100,
+      weaponsList[Math.floor(Math.random() * weaponsList.length)]
+    ),
+    recipient = new createDuelistProfile(
+      recipientUsername,
+      recipientId,
+      100,
+      weaponsList[Math.floor(Math.random() * weaponsList.length)]
+    )
+  ]
 
-    await BOT.sendMessage(
-      chatId,
-      `@${recipient.username} наклоняется и поднимает дедовскую перчатку. Дуэль между @${sender.username} и @${recipient.username} начинается!\n\nОба пользователя наугад берут коробку с оружием и расходятся в разные стороны. Каждый вытаскивает свое оружие: у @${sender.username} ${sender.weapon.name}; у @${recipient.username} ${recipient.weapon.name}`
-    );
-  };
+  const userFirstMove = duelists[Math.floor(Math.random())]
 
+  await BOT.sendMessage(
+    chatId,
+    `@${duelists[1].username} наклоняется и поднимает дедовскую перчатку. Дуэль между @${duelists[0].username} и @${duelists[1].username} начинается!\n\nОба пользователя наугад берут коробку с оружием и расходятся в разные стороны:\n\nу @${duelists[0].username} ${duelists[0].weapon.name}\nу @${duelists[1].username} ${duelists[1].weapon.name}\n\nПервый ход за @${userFirstMove.username}`, duelActionsKeyboard
+  );
+};
+
+const keyboardCallbackQuery = (
+  recipientId,
+  recipientUsername,
+  senderId,
+  senderUsername
+) => {
   BOT.on("callback_query", async (query) => {
     const { chat, message_id } = query.message;
 
     switch (true) {
       case query.data === "Yes" && recipientId == query.from.id:
-          DuelLaunch(chat.id);
+        DuelHandler(
+          chat.id,
+          recipientId,
+          recipientUsername,
+          senderId,
+          senderUsername
+        );
         break;
       case query.data === "No" && recipientId == query.from.id:
         await BOT.editMessageText(
@@ -110,6 +155,8 @@ const DuelHandler = (
     }
   });
 };
+
+/* end of code block, responsible for handling duels */
 
 const commandHandler = (() => {
   // an arrow function that will process simple commands and send a response to them
@@ -152,9 +199,9 @@ const commandHandler = (() => {
         await BOT.sendMessage(
           chatId,
           `@${sender} снял дедовскую перчатку со своей правой руки и швырнул прямо вам в лицо, объявив дуэль, @${msg.reply_to_message.from.username}\n\nЧтобы согласиться, или отказаться, нажмите соответствующую кнопку`,
-          duelsOptions
+          duelResponseKeyboard
         );
-        DuelHandler(
+        keyboardCallbackQuery(
           msg.reply_to_message.from.id,
           msg.reply_to_message.from.username,
           msg.from.id,
